@@ -1,0 +1,12 @@
+[package]
+name = "vyos-rs-validator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.53", features = ["derive"] }
+
+[dependencies.validators]
+version = "0.25.3"
+features = ["ip", "ipv4", "ipv6", "number", "unsigned_integer", "url"]
+default-features = false
