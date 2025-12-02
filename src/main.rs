@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
 use std::process;
 
 /// VyOS Rust Validator CLI
@@ -26,6 +26,21 @@ enum Validators {
     /// Validate IPv6 address
     Ipv6Host {
         #[arg(help = "IPv6 address")]
+        value: String,
+    },
+    /// Validate any IP socket (IPv4 or IPv6)
+    IpSocket {
+        #[arg(help = "IP socket address")]
+        value: String,
+    },
+    /// Validate IPv4 socket address
+    Ipv4Socket {
+        #[arg(help = "IPv4 socket address (e.g., 192.168.1.1:8080)")]
+        value: String,
+    },
+    /// Validate IPv6 socket address
+    Ipv6Socket {
+        #[arg(help = "IPv6 socket address (e.g., [::1]:8080 or [2001:db8::1]:80)")]
         value: String,
     },
 }
@@ -58,6 +73,33 @@ fn main() {
                 0
             } else {
                 eprintln!("Invalid IPv6: {}", value);
+                1
+            }
+        }
+        Validators::IpSocket { value } => {
+            if value.parse::<SocketAddr>().is_ok() {
+                println!("Valid IP socket address: {}", value);
+                0
+            } else {
+                eprintln!("Invalid IP socket address: {}", value);
+                1
+            }
+        }
+        Validators::Ipv4Socket { value } => {
+            if value.parse::<SocketAddrV4>().is_ok() {
+                println!("Valid IPv4 socket address: {}", value);
+                0
+            } else {
+                eprintln!("Invalid IPv4 socket address: {}", value);
+                1
+            }
+        }
+        Validators::Ipv6Socket { value } => {
+            if value.parse::<SocketAddrV6>().is_ok() {
+                println!("Valid IPv6 socket address: {}", value);
+                0
+            } else {
+                eprintln!("Invalid IPv6 socket address: {}", value);
                 1
             }
         }
